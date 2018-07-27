@@ -1,0 +1,141 @@
+---
+title: "Lab 2: Examining College Data"
+author: "Gabriel Etrata and Hanaa Lachhab"
+output: html_document
+
+---
+
+<!-- WARNING: This file must be in the same folder with the data and source code to work.-->
+
+```{r, echo=FALSE, message=FALSE}
+#############################
+#DON'T MESS WITH THIS CODE CHUNK!
+source("lab2-source-code.R")
+#Import the data
+lab2.data <- read.csv("lab2-data.csv", header = T)
+#Attach the data
+attach(lab2.data)
+###############################
+```
+Exercise 1:
+
+```{r}
+barplot(control, main = "Private vs. Public Comparison",xlab = "Type of Institution", ylab = "Number of Institutions")
+```
+
+There are more private schools than public schools listed.
+
+Exercise 2:
+
+```{r}
+mean(out.of.state)
+median(out.of.state)
+range(out.of.state)
+hist(out.of.state, main = "Out-of-state Cost of Attendance for Private Institutions", xlab = "Cost ($)", ylab = "Number of Institutions")
+```
+
+The histogram shows that attending an out-of-state, private college will typically cost between $30,000 to $60,000, as shown by the two peaks at these price points. The distribution appears to look this way because most colleges charge a tuition around those two modes, and any price in between may be a result of qualifying aid, or other form of reduced cost.
+
+Exercise 3:
+
+```{r}
+private.instate <- subset(in.state, control == "Private")
+mean(private.instate)
+public.instate <- subset(in.state, control == "Public")
+mean(public.instate)
+sd(private.instate)
+sd(public.instate)
+```
+
+Private, in-state institutions have a greater variation in cost.
+
+```{r}
+boxplot(private.instate, public.instate, main = "In-state Cost of Attendance", xlab = "Type of Institution", ylab = "Cost ($)", names = c ("Private", "Public"))
+labels = c("Private", "Public")
+```
+
+In-state cost and institutional control seem to be associated.The boxplot shows that private institutions are more expensive than public institutions, since the minimum cost to attend a private institution is higher than the maximum cost to attend a public instution. 
+
+Exercise 4:
+
+```{r}
+private.outofstate <- subset(out.of.state, control == "Private")
+mean(private.outofstate)
+public.outofstate <- subset(out.of.state, control == "Public")
+mean(public.outofstate)
+sd(private.outofstate)
+sd(public.outofstate)
+```
+
+Public, out-of-state institutions have a greater variation in cost.
+
+```{r}
+boxplot(private.outofstate, public.outofstate, main = "Out-of-state Cost of Attendance", xlab = "Type of Institution", ylab = "Cost ($)", names = c ("Private", "Public"))
+labels = c("Private", "Public")
+```
+
+Out-of-state cost and institutional control appear to be associated as well. Private institutions are still more expensive than public ones, but compared to the previous boxplot [comparing in-state cost of attendance], the gap between the two has become closer, reaching some overlap. The minimum cost to attend a private instution is no longer greater than the maximum cost to attend a public institution, meaning that attending a private school can be the most inexpensive option in some cases.
+
+Exercise 5:
+
+```{r}
+mosaicplot(control~tests.required, main="Test Requirements for Public and Private Institutions", xlab = "Type of Institution", ylab = "Test Requirements")
+```
+
+Both public and private institutions generally require standardized tests, but overall, private institutions do not require them compared to public institutions. 
+
+Exercise 6:
+
+```{r}
+boxplot(enrollment.undergrad~control, main = "Enrollment Size and Type of Institution", xlab = "Type of Institution", ylab = "Enrollment Size")
+```
+
+Enrollment size and type of institution seem to be associated. The boxplot shows that more students tend to be enrolled at public institutions than private institutions. 
+
+Exercise 7:
+
+```{r}
+summary(white)
+hist(white, main = "Percentage of White Students Enrolled at Various Institutions" ,ylab = "Number of Institutions" ,xlab = "Percent of White Students")
+```
+
+Histogram is unimodal and left-skewed due to a majority of instituions having and enrollment of 50-70% of white students, and a small number of institutions having an enrollment of <20% of white students. 
+
+
+```{r}
+whiteurban <- subset(white, location == "Urban")
+summary(whiteurban)
+hist(whiteurban, main = "Percentage of White Students Attending School With an Urban Campus", xlab = "Percent of White Students", ylab = "Number of Institutions")
+```
+
+This histogram is similar to the previous one because it is also unimodal and left-skewed for the same reasons, but there are slight differences in the mean, median Q1, and Q3.
+
+Exercise 8:
+
+I predict that a school's instutituion type and campus type will not be associated because campus type does not necessarily affect institution type; both public and private instuitions can have either an urban or rural campus.
+
+```{r}
+table(control, location)
+control.location <- table(control, location)
+mosaicplot(control.location, main = "", xlab = "Type of Institution", ylab = "Campus")
+```
+
+The data suggests that there is an assocation between the type of instuition and campus type. Public schools are more likely to have an urban campus, and there is a higher proportion of private institutions in a rural campus, than public ones.
+
+Exercise 9:
+
+I predict that the percent of women enrolled and type of instuition are associated, since single-sex schools tend to be private institutions. Essentially, my hypothesis is that there is a higher percentage of women enrolled at private schools due to the existence of single-sex schools. 
+
+```{r}
+mean(women)
+range(women)
+boxplot(women~control, main = "Females Enrolled in Public and Private Institutions", xlab = "Type of Institution", ylab = "Percent of Females Enrolled")
+```
+
+The boxplots appear to be very similar, aside from the various outliers enrolled in private institutions. One thing worth mentioning is that the outlier private institutions that have 0% and 100% of women enrolled, are most likely male-only, and female-only, respectively, therefore they may have skewed the data to be higher, or lower than it should be.
+
+The percent of women enrolled and type of institution do not seem to be associated with each other because regardless of institution type, most colleges have an enrollment of 40-60% women. 
+
+CONCLUSION:
+
+The findings in this lab were determined using inferences based on the data given and supported using statistical methodology. For the most part, variables were compared using either a box plot, bar plot, or mosaic plot in order to determine whether or not an assocation existed between variables. Some speculative findings (that should be taken lightly since this is not an experiment) include: private institutions are generally more expensive than public institutions regardless of campus type, and that the percentage of white students attending an institution with an urban campus, is reflective of the percentage of white students attending all institutions in the data set.

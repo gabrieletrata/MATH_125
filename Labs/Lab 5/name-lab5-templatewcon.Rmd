@@ -1,0 +1,184 @@
+---
+title: "Lab 5: Hypothesis Testing for Comparing Two Proportions / Means"
+author: "Gabriel Etrata and Craig Balkhuysen"
+output: html_document
+date: April 14, 2016
+---
+
+<!-- WARNING: This file must be in the same folder with the data and source code to work. DO NOT MODIFY THE CODE CHUNK BELOW OR CHANGE ANY FILENAMES-->
+
+```{r, echo=FALSE, message=FALSE}
+#Source the source code
+source("lab5-source-code.R")
+#Import the data
+lab5.data <- read.csv("lab5-data.csv", header = T)
+#Attach the data
+attach(lab5.data)
+```
+
+### 1) Is there sample evidence in how much Year 1 students exercise versus Year 2 students?
+
+1a)
+
+Is there a difference in how much Year-1 students exercise vs. Year-2 students?
+
+1b)
+```{r}
+compareMeans(hrs.exercise, year)
+boxplot(hrs.exercise~year)
+```
+
+1c)
+
+$$H_o: \hat{p}_Y1 = \hat{p}_Y2$$
+
+Null- There is no difference in the amount of hours exercised by Year 1s and Year 2s. 
+
+$$H_a: \hat{p}_Y1 \neq \hat{p}_Y2$$
+
+Alternative- There is a difference in the amount of hours exercised by Year 1s and Year 2s.
+
+```{r}
+lab5.data$shuffled.hrs.exercise <- sample(hrs.exercise)
+compareMeans(lab5.data$shuffled.hrs.exercise, lab5.data$year)
+```
+
+$$\bar{x}_y1 - \bar{x}_y2 = -1.11$$
+
+```{r}
+set.seed((100))
+randomization.test(lab5.data$shuffled.hrs.exercise, lab5.data$year, num = 1000)
+```
+
+698
+Two sided p-value: 0.698
+
+1d) 
+  From the two-sided P-Value, and the data collected from the analysis, it can be concluded that Year 2's do exercise more than Year 1's do. We reject the null in the favor of the alterantive.
+
+1e) 
+  We only looked at two varibles, The year the student is in and the amount of hours they exercise, so then what other varibles are there that direclt effect the amount of exercise a student has? Could amount of hours spent of HomeWork being one? Since Year 2's get less work because they are seniors, so that gives them more time to exercise. We can reject the null in the favor of the alternative.
+
+### 2) Is there sample evidence of a Year 1-Year 2 difference on the sophomore lunch issue? 
+
+2a)
+
+Is there a difference in how Year 1s and Year 2s feel about the Sophmore lunch issue?
+
+2b)
+```{r}
+compareProportions(soph.lunch, year)
+table(soph.lunch, year)
+```
+
+2c)
+
+ Null- There is no diffrence of opinion between Year 1s and Year 2s on the sophomore lunch issue.
+ 
+ $$H_o: \bar{x}_y1 = \bar{x}_y2$$
+ 
+ Alternative- There is a difference of opinion between Year 1s and Year 2s on the sophmore lunch issue.
+ 
+ $$H_a: \bar{x}_y1 \neq \bar{x}_y2$$
+ 
+```{r}
+lab5.data$shuffled.soph.lunch <- sample(soph.lunch)
+compareProportions(lab5.data$shuffled.soph.lunch, lab5.data$year)
+```
+
+Difference in proportions: 0.05
+
+```{r}
+set.seed((101))
+randomization.test(lab5.data$shuffled.soph.lunch, lab5.data$year, num = 1000)
+```
+
+290
+Two sided p-value: 0.290
+
+2d)  After Examing the two-sided P-Value and the data, and taking a consideration that there is a differnce in the amount of students examined, there are more year ones than Year twos, it still can be said that year 2's prefer that sophmores should not be allowed out for lunch compared to Year 1's. We can reject the null in the favor of the alternative.
+
+2e) I just have one question, is the fact that there is significantly less amount of Year 1's being survayed, make this type of question invalid to analyze the data. The reults of the Year 1's could have dramtaiclly been different.
+
+### 3) Is there sample evidence of a Year 1-Year 2 difference when it comes to social network use?
+
+3a) Do Y1 and Y2 students differ in social network use?
+
+3b)
+```{r}
+compareMeans(hrs.fb, year)
+boxplot(hrs.fb~year)
+```
+3c)
+Null hypothesis:
+
+There is no diffrence in the amount of hours on social media by Year 1s and Year 2s. 
+$$H_o: \hat{p}_Y1 = \hat{p}_Y2$$
+
+Alternative hypothesis:
+
+There is a difference in the amount of hours exercised by Year 1s and Year 2s.
+
+$$H_a: \hat{p}_Y1 \neq \hat{p}_Y2$$
+
+```{r}
+lab5.data$shuffled.hrs.fb <- sample(hrs.fb)
+compareMeans(lab5.data$shuffled.hrs.fb, lab5.data$year)
+```
+
+$$\bar{x}_y1 - \bar{x}_y2 = -2.27$$
+
+```{r}
+set.seed((100))
+randomization.test(lab5.data$shuffled.hrs.fb, lab5.data$year, num = 1000)
+```
+
+44 samples
+Two sided p-value: 0.044
+
+3d) From the Two-sided p-value observed and the data collected we can conclude that there is split difference between Year 1's and Year 2's. In the shuffled randomized test simulations, we can see that year ones spend more time on social media. While in the actual sample results year 2's were on social media more. We reject the null in the favor of the alternative.
+ 
+
+3e) 
+  
+
+### 4) Is there sample evidence of a gender difference on the sophomore lunch issue?
+
+4a)
+
+Is there a gender difference on the sophomore lunch issue?
+
+4b)
+```{r}
+compareProportions(soph.lunch, gender)
+table(soph.lunch, gender)
+```
+
+
+4c)
+
+Null hypothesis:
+$$H_o: \bar{x}_y1 = \bar{x}_y2$$
+
+Alternative hypothesis:
+
+$$H_a: \bar{x}_y1 \neq \bar{x}_y2$$
+
+```{r}
+lab5.data$shuffled.soph.lunch <- sample(soph.lunch)
+compareProportions(lab5.data$shuffled.soph.lunch, lab5.data$gender)
+```
+
+Difference in proportions:  0.02
+```{r}
+set.seed((100))
+randomization.test(lab5.data$soph.lunch, lab5.data$gender, num = 1000, dist = T)
+```
+
+Two sided p-value: .766
+4d)
+  It can be concluded after looking at the two-sided p-value, and the data, we can say that there is a difference between males and females when it comes to their opinion if sophmores should be allowed to go out for lunch. We will reject the null in the favor of the alternative, that males are more likely, within the data we have, to say no to sophmores going out for lunch
+
+4e)
+  I find it so that the amount of females and males from each year plays a factor. This being beause as seen in the earlier comparison of year 1's and year 2's and their opinion of 10th graders going out for lunch, that majority of would be against the idea and that it kinda dosent make sense that males said no more than females, even though theres many more females.
+<!-- Continue your lab below. DON'T FORGET: before each use of the sample or randomization.test command, add set.seed() with some number of your choice in the parentheses. ALSO: when done, remove the "dist=T" argument from each randomization.test command in order to leave the long list of numbers out of your lab report.-->

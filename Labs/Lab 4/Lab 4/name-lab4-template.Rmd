@@ -1,0 +1,234 @@
+---
+title: "Lab 4: Hypothesis Testing for One Proportion / Mean"
+author: "Gabriel Etrata and Theo Kaufman"
+output: html_document
+date: April 4, 2016
+---
+
+<!-- WARNING: This file must be in the same folder with the data and source code to work. DO NOT MODIFY THE CODE CHUNK BELOW OR CHANGE ANY FILENAMES-->
+
+```{r, echo=FALSE, message=FALSE}
+#Source the source code
+source("lab4-source-code.R")
+#Import the data
+data <- read.csv("lab4-data.csv", header = T)
+#Attach the data
+attach(data)
+```
+
+<!-- When you are done with your code, remove this piece of text (including the symbols at the beginning and end) and write a brief one or two sentence introduction to this lab. For example: "In this lab, we..." -->
+
+(1) #### Introductory Test: Time Perception
+
+A) 
+
+How accurately do people perceive time?
+
+C)
+
+```{r}
+length(times)
+mean(times)
+hist(times)
+```
+
+The histogram is right-skewed and unimodal. 
+
+D)
+
+Null hypothesis: In the population, the average perceived time will equal the true length of the snippet.
+
+$$H_o: \mu = 10$$
+
+
+Alternative hypothesis: In the population, people will tend to overestimate the length of the song snippet.
+
+$$H_a: \mu > 10$$
+
+E)
+
+```{r}
+faketimes <- times - 3.71
+mean(faketimes)
+hist(faketimes)
+sample1 <- sample(faketimes, 48, replace = T)
+mean(sample1)
+```
+
+F)
+
+```{r}
+set.seed(5) 
+samplemeans <- replicate (1000, mean(sample(faketimes, 48, replace = T)))
+#sort(samplemeans)
+
+```
+
+H)
+
+The probability is unlikely enough, so rejecting the null would be a just decision, because $$\bar{x} < 5\%$$.
+In context, it is extremely unlikely that someone would perceive the snippet to be 10 seconds in length by chance.
+
+I)
+
+I found it particuarly interesting that it is highly unlikely to accurately perceive time without thinking about it. I think that the study could've been tested among various types of music. I sometimes find that it's easier to keep focus with instrumental music, as opposed to music with vocals. Does it have anything to do with the genre of music?  Is there anything that can be done to improve our subconscious time keeping, or is exceedingly difficult to keep track of time with our minds?
+
+
+2) #### Coke vs. Pepsi
+
+A) Do BHSEC college students reflect the US population's preference for Coke to Pepsi?
+
+B)
+
+```{r}
+table(soda)
+barplot(soda)
+20/38
+```
+
+$$ \hat{p} = 0.53$$
+
+C)
+
+Null hypothesis: The BHSEC population reflects the US population's preference for Coke to Pepsi.
+$$H_o: p = 0.66$$
+
+Alternative hypothesis: The BHSEC population has a higher preference for Coke to Pepsi compared to the population of the US.
+$$H_a: p > 0.66$$
+
+D)
+
+```{r}
+sodaSimulation <- sample(3, 38, replace = T)
+table(sodaSimulation)
+```
+
+If Coke is represented by 2 and 3, then 27/38 (71%) preferred Coke.
+
+E)
+
+```{r}
+set.seed(1000)
+randomization.test(soda, null = (2/3), num = 1000, distribution = T)
+```
+
+F)
+
+35/1000 simulations yielded a proportion (0.035) less than p-hat (0.53).
+
+G)
+
+Conclusion: Since 3.5% of students in the simulation did not prefer Coke to Pepsi, we reject the null ($$\bar{x} < 5%$$). Judging from the data, it appears that BHSEC students have a higher predicted preference for Coke to Pepsi compared to the preference of the US population.
+
+H)
+
+Some concerns I have about the data regard how it came about. Were the subjects polled, or was there a blind taste test? Also, since Coke is so popular, could there be a factor that is causal for its popularity, or since Pepsi is less popular could there be a factor causal for its lower popularity compared to Coke?
+
+
+3) #### True Love?
+
+A) 
+
+Do BHSEC college students' parents have a similar or different age of New York's average age at first marriage?
+
+B)
+
+```{r}
+mean(marriage)
+hist(marriage)
+```
+
+$$\bar{x} = 27.34
+
+C)
+
+Null hypothesis: The average first marriage age of BHSEC college students reflect that of New York State.
+$$H_o: \mu = 29$$
+
+Alternative hypothesis: The average first marriage age of BHSEC college students is less than taht of New York State.
+$$H_a: \mu < 29$$
+
+D) 
+
+```{r}
+fakeMarriage <- marriage + 1.65789
+marriageSimulation<-sample(fakeMarriage, 38, replace = T)
+mean(marriageSimulation)
+```
+
+E)
+
+```{r}
+set.seed(789) 
+randomization.test(marriage, null = 29, num = 1000)
+``` 
+
+F) 
+
+0/1000 simulations yielded a mean the same as the real sample or further away from the null.
+
+G)
+
+Since $$\bar{x} < 5%$$, we reject the null and conclude that BHSEC students are predicted to have an average first marriage age to be less than that of New York State. 
+
+H)
+
+It's peculiar that none of the simulations yielded a mean equal, or near the real sample. Furthermore, since this sample study yielded a mean of 0, it appears that it is nearly impossible for a BHSEC student to estimate that their first average marriage age, will be lower than the average first marriage of New York State at random, or chance.
+
+
+4) #### BHSEC Lefties
+
+A) 
+
+Are BHSEC college students more likely to be left-handed than the general population?
+
+B)
+
+```{r}
+table(handedness)
+5/38
+```
+
+$$\hat{p} = 0.13$$
+
+C)
+
+Null hypothesis: The proportion of left-handed, BHSEC students reflect the proportion of left-handed people in the general population. 
+$$H_o: p = 0.10$$
+
+Alternative hypothesis: The proportion of left-handed, BHSEC students are is higher than that of the general population. 
+$$H_a: p > 0.10$$
+
+D)
+
+```{r}
+handednessSimulation <- sample(11, 38, replace = T)
+table(handednessSimulation)
+```
+
+3/38 students were left handed in the simulation.
+
+E)
+
+```{r}
+set.seed(360)
+randomization.test(handedness, null=(10/100), num = 1000, distribution = T)
+```
+
+F)
+
+211/1000 simulations yielded a proportion (0.21) above 0.13.
+
+G)
+
+Since p (0.21) is greater than 5% we do not reject the null and can conclude that the proportion of left-handed, BHSEC students is predicted to be reflective of the proportion of left-handed people in the general population.
+
+H)
+
+I found it interesting that BHSEC is predicted to have more left-handed students than the general population. Could left-handedness suggest something in BHSEC students that isn't common to the general population?
+
+
+CONCLUSION:
+
+BHSEC students are an interesting bunch.Through hypothesis testing for one proportion or mean, inferences from each particular sample were made. With the data found, I've concluded that BHSEC students are predicted to: reflect the US population's preference for Coke to Pepsi, have their first marriage before the age of 29 (the average age of first marriage in New York), and have a higher percentage of left-handed people than the general population. 
+

@@ -1,0 +1,180 @@
+---
+title: "Final Project: What are Bard High School Early College Students Eating?"
+author: Gabriel Etrata
+output: html_document
+date: June 13, 2016
+---
+
+<!-- WARNING: see the code chunk below for instructions on importing and attaching your data-->
+
+```{r, echo=FALSE, message=FALSE}
+
+## Import the data by "data.csv" to the correct filename. Don't forget that your data file needs to be in the same folder as this Rmd.
+data <- read.csv("option1-data.csv", header = T)
+
+#Attach the data
+attach(data)
+```
+
+#### Introduction
+
+The topic at hand involves the dietary habits of Bard High School Early College Queens students. Specifically, the main question of this study is to determine if BHSECQ students find the school's food to be favorable at some level and if not, is there evidence that they will avoid it? As someone who spends a considerable amount of money on food each week due to my displeasure of the school's food, I want to get an idea of how other BHSECQ students are eating. Essentially, if this study were produced on a larger scale, could we convince the administration to provide better food options?
+
+#### Data
+
+The data was collected through an online survey created through Google Forms, intended exclusively for Bard High School Early College Queens students. The survey started at 9:00am EST on Wednesday, June 1st 2016 and ended at 9:00pm EST on Thursday, June 2nd 2016.
+
+Specific questions of interest include: 
+
+1) Is the school breakfast or school lunch more favorable?
+
+2) Is there a relationship between how hungry someone is and if they eat school lunch or not?
+
+3) Is there a relationship between the money spent on food per week and how many days per week food is bought outside?
+
+Potential sources of bias/error in the data collection include: small randomness,response bias, sample not matching the population very well (undercoverage), and students ommiting questions in the survey.
+
+The sample of interest is BHSECQ Students and the sample size is 87, since only 87 students answered the survey.
+
+One consideration to make: there is an overwhelming amount of college students compared to high school students who took the survey (22:7), so the sub-population of high school students may be misrepresented. 
+
+#### Variables
+<!-- If you want to do a table, here's how. Otherwise, just delete.-->
+
+Variable | Description
+------------- | -------------
+breakfast.home | *C* Is breakfast eaten at home on a school day - Y or N.
+breakfast.school | *C* Do you typically eat breakfast at school on a school day - Y or N?
+money.food | *Q* How much money is spent on food per week during school days (USD).
+hunger | *Q* Hunger typically felt during the school day (measured on a scale of 1-10, with 10 being the most hungry).
+school.lunch | *C* Do you usually eat school lunch - Y or N.
+bring.lunch | *C* Do you usually bring your own lunch to school - Y or N?
+buy.food | *Q* How many days per week food is bought outside (on a scale of 0-7, with 7 being 7 days a week).
+school.lunch.rating | *Q* Feeling towards school lunch (measured on  a scale of 1-10, with 10 being the most favorable).
+school.lunch.healthy | *Q* Measure of feeling towards the healthiness of school lunch (measured on a scale of 1-10, with 10 being the most healthy).
+
+*Q* - Quantitative
+
+*C* - Categorical
+
+#### EDA and Statistical Inference
+
+### 1. Is the school breakfast or school lunch more favorable?
+
+```{r}
+table(breakfast.school)
+31/87
+table(school.lunch)
+28/87
+```
+Proportion of students who consume school breakfast: $$\hat{p}_B = 0.36$$
+
+Proportion of students who consume school lunch: $$\hat{p}_L = 0.32$$
+
+Difference in proportions: $$\hat{p}_F - \hat{p}_M = 0.04$$
+**Null hypothesis**: There is no significant difference between the proportion of students who consume school breakfast and the proportion of students who consume school lunch.
+
+$$H_o: p_B = p_L$$  
+
+**Alternative hypothesis**: There is a significant difference between the proportion of students who consume school breakfast and the proportion of students who consume school lunch.
+
+$$H_a: p_B \neq p_L$$
+
+**Testing**: The following is a two-sided, proportions test:
+
+```{r}
+prop.test(table(breakfast.school, school.lunch))
+```
+Two-sided p value:
+$$p = 0.48$$
+**Conclusion**: Since p = 0.48, we reject the null hypothesis in favor of the alternative and conclude that that on average, BHSEC students consume breakfast more frequently.
+
+**Confidence interval interpretation**: With a confidence interval of (-0.37, 0.07), we can be 95% confident that on average, the actual difference in proportions will lie between those two bounds, and since the difference of proportions (0.04) is in the range of this confidence interval, the conclusion is well supported. 
+<!-- Note: here you could break up your analysis into subsections by using an extra hashtag, eg. ##### subsection -->
+
+### 2. Is there a relationship between how hungry someone is and if they eat school lunch or not?
+
+```{r}
+table(school.lunch)
+summary(hunger)
+hist(hunger, main = "Hunger Among BHSEC Students", xlab = "Level of Hunger")
+table(hunger, school.lunch)
+noToSchoolLunch <- subset(hunger, school.lunch == "No")
+yesToSchoolLunch <- subset(hunger, school.lunch == "Yes")
+mean(noToSchoolLunch)
+mean(yesToSchoolLunch)
+```
+Mean hunger level of students who do not eat school lunch (on a scale of 1-10): $$\bar{x}_N = 6.15$$
+
+Mean hunger level of students who do eat school lunch (on a scale of 1-10): $$\bar{x}_Y = 6.82$$
+
+```{r}
+6.15-6.82
+```
+
+Difference in means: 
+$$ \bar{x}_N - \bar{x}_Y =  -0.67$$
+
+**Null hypothesis**: There is no relationship between how hungry someone is and if they eat school lunch or not.
+
+$$H_o: x_N = x_Y$$  
+
+**Alternative hypothesis**: There is a relationship between how hungry someone is and if they eat school lunch or not.
+
+$$H_a: x_N \neq x_Y$$
+
+**Testing**: The following is a two-sided, means test
+
+```{r}
+t.test(hunger~school.lunch)
+```
+
+Two-sided p-value: $$p = 0.24$$
+**Conclusion**: Since p = 0.24, we reject the null hypothesis in favor of the alternative hypothesis and can conclude that there is a relationship between how hungry someone is and if they eat school lunch or not.
+
+**Confidence interval interpretation**: With a confidence interval of (-1.51, 0.17), we can be 95% confident that on average, the actual difference in means will lie between those two bounds, and since the the difference of means(-0.67) is in the range of this confidence interval, the conclusion is well supported. 
+
+### 3. Is there a relationship between the money spent on food per week and how many days per week food is bought outside?
+
+```{r}
+summary(money.food)
+summary(buy.food)
+lm(money.food~buy.food)
+plot(money.food, buy.food, main = "Money Spent on Food per Week vs. Days Food is Bought Outside", xlab = "Money Spent on Food (USD)", ylab = "Number of Days")
+abline(1.6156, 0.0621, col = "red")
+abline(1.6156, 0.0621, col = "red")
+```
+
+**Null hypothesis**: 
+
+There is no correlation between the money spent on food outside and the number of days per week food is bought.
+
+**Alternative hypothesis**: 
+
+There is a correlation between the money spent on food outside and the number of days per week food is bought.
+
+**Testing**: The following is a correlation test
+
+```{r}
+cor.test(money.food, buy.food)
+```
+
+**Conclusion**: Since p = 3.101e-08, we reject the null hypothesis in favor of the alternative hypothesis and conclude that there is a correlation (0.57) between the money spent on food outside and the number of days per week food is bought. The correlation is positive and moderate. 
+
+**Confidence interval interpretation**: With a confidence interval of (0.40, 0.70), we can be 95% confident that on average, the actual correlation will lie between those two bounds, and since the correlation (0.57) is in the range of this confidence interval, the conclusion is well supported. 
+
+#### Discussion and Conclusion
+
+Stated conclusions/findings:
+
+1) BHSEC students consume breakfast more frequently than lunch, which shows that breakfast is more favorable. This finding was interesting because it brings up the question of what could be causing and I thought that lunch would be more popular because there is only one period to get breakfast, while there are periods to get lunch. Could it be because breakfast is free for all students, while lunch is not? Some limitations to this are the fact that the high school population is misrepresented in the dataset, and since high school students are not allowed to go outside for lunch, they are the most likely eating school breakfast and lunch, unless they bring their own. 
+
+2) There is a relationship between how hungry a BHSEC student is and if they eat school lunch or not. The mean level of hunger among students who do not eat school lunch is 6.15 and the mean level of hunger among students who do eat school lunch is 6.82, which is surprising because although the school lunch does provide a good amount of food(unlimited salad bar), students who consume it are hungrier than those who do not eat it. A reason for this may be because there are a lot of undesirable options for school lunch and students may simply not consume most of the lunch or, throw away the undesirable parts of it. Another reason may be because students who do not eat school lunch, bring their own lunch that satisfies hunger much better. 
+
+3) The more someone goes out to buy food, the more money (USD) they spend on food. This result was expected, since the more frequently you go out to buy food, you must be spending more on it. In the context of this study, this piece of research was conducted simply to make sure that BHSEC students are not just going out and buying extremely cheap pieces of food (buying gum once a day doesn't count). In other words, it shows that they are indeed spending money on food typically expected, where it doesn't skew the data. 
+
+Basically, the findings from this study show that lunch can be viewed in a negative light, since it is less favorable than breakfast, students who are more hungry are students who consume school lunch, and since students go out to buy food, it shows that there are students out there who are finding alternatives to the school food.
+
+If more time was given, I would take this project on a larger scale and sample more high school students, and maybe even some faculty/administration on their school food opinions. Some new questions would include research questions surrounding the faculty/administration's opinion on the food, the opinions of the people who prepare the food, and introduce a new survey question of "Would you eat the school lunch if it improved?"
+
+Others can make use of my conclusions by assessing their own opinions of the school lunch and maybe replicating the study in other schools who use the same school lunch service as us, (other public high schools in America) in order to find out the overall American student satisfaction with school food lunch.

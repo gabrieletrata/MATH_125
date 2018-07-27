@@ -1,0 +1,80 @@
+---
+title: "Lab 5: Hypothesis Testing for Comparing Two Proportions / Means"
+author: "Gabriel Etrata and Craig Balkhuysen"
+output: html_document
+date: April 14, 2016
+---
+
+<!-- WARNING: This file must be in the same folder with the data and source code to work. DO NOT MODIFY THE CODE CHUNK BELOW OR CHANGE ANY FILENAMES-->
+
+```{r, echo=FALSE, message=FALSE}
+#Source the source code
+source("lab5-source-code.R")
+#Import the data
+lab5.data <- read.csv("lab5-data.csv", header = T)
+#Attach the data
+attach(lab5.data)
+```
+### Question 1
+1-  
+Is there a difference in how much Year-1 students exercise vs. Year-2 students?
+
+2-
+```{r}
+compareMeans(hrs.exercise, year)
+boxplot(hrs.exercise~year)
+```
+
+3-
+
+$$H_o: \hat{p}_Y1 = \hat{p}_Y2$$
+
+Null- There is no diffrence in the amount of hours exercised by Year 1s and Year 2s. 
+
+$$H_a: \hat{p}_Y1 \neq \hat{p}_Y2$$
+
+Alternative- There is a diffrence in the amount of hours exercised by Year 1s and Year 2s.
+
+```{r}
+lab5.data$shuffled.hrs.exercise <- sample(hrs.exercise)
+compareMeans(lab5.data$shuffled.hrs.exercise, lab5.data$year)
+```
+
+$$\bar{x}_y1 - \bar{x}_y2 = -1.11$$
+
+```{r}
+set.seed(125)
+randomization.test(lab5.data$shuffled.hrs.exercise, lab5.data$year, num = 1000)
+```
+
+Two Sided P-Value: 254
+
+
+3-
+
+
+4-
+
+### Question 2
+
+1-
+ Is there a difference in how Year 1s and Year 2s feel about the Sophmore lunch issue?
+ 
+2-
+```{r}
+compareProportions(soph.lunch, year)
+table(soph.lunch, year)
+```
+
+ Null- There is no diffrence of opinion bewtween Year 1s and Year 2s on the sophmore lunch issue.
+ 
+ $$H_a: \bar{x}_y1 = \bar{x}_y2$$
+ 
+ Alternative- There is a difference of opinion between Year 1s and Year 2s on the sophmore lunch issue.
+ 
+ $$H_o: \bar{x}_y1 \neq \bar{x}_y2$$
+ 
+### Question 3
+
+### Question 4
+<!-- Continue your lab below. DON'T FORGET: before each use of the sample or randomization.test command, add set.seed() with some number of your choice in the parentheses. ALSO: when done, remove the "dist=T" argument from each randomization.test command in order to leave the long list of numbers out of your lab report.-->

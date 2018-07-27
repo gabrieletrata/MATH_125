@@ -1,0 +1,165 @@
+---
+title: "Lab 6: Connecting Hypothesis Testing and Confidence Intervals"
+author: "Gabriel Etrata and Samirna Nasr"
+output: html_document
+date: May 20, 2016
+---
+
+<!-- WARNING: This file must be in the same folder with the data and source code to work. DO NOT MODIFY THE CODE CHUNK BELOW OR CHANGE ANY FILENAMES-->
+
+```{r, echo=FALSE, message=FALSE}
+#Source the source code
+#source("lab6-source-code.R")
+#Import the data
+lab6.data <- read.csv("lab6-data.csv", header = T)
+#Attach the data
+attach(lab6.data)
+```
+##Introduction:
+In this lab, we analyzed data from a sample 253 students from College X. Using hypothesis tests and confidence intervals, we were able to make conclusions from research questions about the student body.
+
+#### Weeknight Sleep at College X
+
+### 1. Do students at College X sleep more than BHSEC students?
+
+```{r}
+# Make a piece of exploratory data analysis.
+hist(WeekdaySleep, main = "Weekday Hours Slept by College X students", xlab = "Hours", ylab = "Frequency")
+mean(WeekdaySleep)
+```
+
+**Null hypothesis**: Students at College X sleep have the same amount of weekday sleep as BHSEC students. 
+
+$$H_o: \mu = 6.8$$  
+
+**Alternative hypothesis**: Students at College X sleep have more weekday sleep than BHSEC students. 
+
+$$H_a: \mu > 6.8$$
+
+**Observations**: A mean of 7.9hrs suggests that students at College X sleep more than BHSEC students.
+
+**Testing**: The following is a one-sided, single mean test.
+
+```{r}
+t.test(WeekdaySleep, mu = 6.8, alternative = "less")
+t.test(WeekdaySleep, mu = 6.8, alternative = "greater")
+```
+
+**Conclusion**: Since p < 2.2e-16, we reject the null hypothesis in favor of the alternative hypothesis, and can conclude that students at College X sleep have more weekday sleep than BHSEC students.
+
+**Confidence interval interpretation**: With a confidence interval of (7.7, 8.0), we can be 95% confident that on average, the actual mean will lie between those two bounds, and since the mean (7.9) is in the range of this confidence interval, the conclusion is well supported.
+
+#### College X GPA
+
+### 2. Is the average GPA at College X greater than 3.1?
+
+```{r}
+# Make a piece of exploratory data analysis.
+hist(GPA, main = "GPA Distribution at College X", xlab = "GPA", ylab = "Frequency")
+mean(GPA)
+```
+
+**Null hypothesis**: The average GPA at College X is 3.1.
+
+$$H_o: \mu = 3.1 $$  
+
+**Alternative hypothesis**: The average GPA at College X is greater than 3.1. 
+
+$$H_a: \mu > 3.1$$ 
+
+**Observations**: The mean GPA suggests that the average GPA is greater than 3.1.
+
+**Testing**: The following is a one-sided, single mean test.
+
+```{r}
+t.test(GPA, mu = 3.1, alternative = "less")
+t.test(GPA, mu = 3.1, alternative = "greater")
+```
+
+**Conclusion**: Since p = 4.164e-08, we reject the null in favor of the alternative, and can conclude that the average GPA at College X is greater than 3.1. 
+
+**Confidence interval interpretation**: With a confidence interval of (3.24, 3.29), we can be 95% confident that on average, the actual mean will lie between those two bounds, and since the mean (3.24) is in the range of this confidence interval, the conclusion is well supported. 
+
+#### Stress at College X
+
+### 3. Is there a significant difference between the proportions of male and female students who are under high stress? 
+
+```{r}
+# Make a piece of exploratory data analysis.
+table(Gender, Stress)
+38/151
+18/102
+```
+Proportion of females under high stress: $$\hat{p}_F = 0.25$$
+
+Proportion of males under high stress: $$\hat{p}_M = 0.18$$
+
+Difference in proportions: $$\hat{p}_F - \hat{p}_M = 0.07$$
+
+**Null hypothesis**: There is no significant difference between proportions of male and female students who are under high stress.
+$$H_o: p_F  = p_M $$  
+
+**Alternative hypothesis**: There is a significant difference between proportions of male and female students who are under high stress.
+$$H_a: p_F \neq p_M$$ 
+
+**Observations**: The difference in proportions (0.07), suggests that on average, females are more stressed than males. 
+
+**Testing**: The following is a two-sided, two proportions test. 
+
+```{r}
+prop.test(table(Gender, Stress))
+```
+Two-sided p-value: $$p = 0.40$$
+
+**Conclusion**: Since p = 0.4, we do not reject the null hypothesis and cannot conclude that there is a significant difference between proportions of male and female students who are under high stress.
+
+**Confidence interval interpretation**: With a confidence interval of (-0.03, 0.18), we can be 95% confident that on average, the actual difference in proportions will lie between those two bounds, and since the difference of proportions (0.07) is in the range of this confidence interval, the conclusion is well supported. 
+
+### 4. Is there a significant difference between the average GPA of "normal stress" students and the average GPA of "high stress" students at this college?
+
+```{r}
+# Make a piece of exploratory data analysis.
+hist(GPA, main = "GPA Distribution of Students in College X")
+table(GPA, Stress)
+highStressGPA <- subset(GPA, Stress == "high")
+normStressGPA <- subset(GPA, Stress == "normal")
+hist(highStressGPA, main = "GPA Distribution of High Stress Students", xlab = "GPA")
+mean(highStressGPA)
+hist(normStressGPA, main = "GPA Distribution of Normal Stress Students", xlab = "GPA")
+mean(normStressGPA)
+```
+Mean GPA of "normal stress"" students: $$\mu_N = 3.20$$
+
+Mean GPA of "high stress" students: $$\mu_H = 3.37$$
+
+Difference in means: $$\mu_N - \mu_H = 0.17 $$
+
+**Null hypothesis**: There is no significant difference between the average GPA of "normal stress" studnets and the average GPA of "high stress" students at College X.
+
+$$H_o: \mu_N  = \mu_H $$  
+
+**Alternative hypothesis**:
+
+There is a significant difference between the average GPA of "normal stress" studnets and the average GPA of "high stress" students at College X.
+
+$$H_a: \mu_N \neq \mu_H$$ 
+
+**Observations**: The two histograms with each respective stress level, and a 0.17 difference in means, suggests that students who have "high stress" appear to have a higher GPA than students who have "normal stress."
+
+**Testing**: The following is a two-sided, means test.
+
+```{r}
+t.test(GPA~Stress)
+```
+Two-sided p-value: $$p = 0.01$$
+
+**Conclusion**: 
+Since p = 0.01, we reject the null hypothesis in favor the alternative hypothesis and can conclude that there is a significant difference between the average GPA of "normal stress" students and the average GPA of "high stress" students at College X.
+
+**Confidence interval interpretation**: 
+With a confidence interval of (0.05, 0.26), we can be 95% confident that on average, the actual difference in means will lie between those two bounds, and since the difference of means (0.17) is in the range of this confidence interval, the conclusion is well supported. 
+
+##Conclusion:
+
+By using various inference methods (exploring the data using histrograms and tables), we were able to run hypothesis tests and use confidence intervals to draw inferences about the student population at College X. Our findings include: students at College X sleep have more weekday sleep than BHSEC students, the average GPA at College X is greater than 3.1, there is a significant difference between proportions of male and female students who are under high stress, and that there is a significant difference between the average GPA of "normal stress" students and the average GPA of "high stress" students at College X. 
+

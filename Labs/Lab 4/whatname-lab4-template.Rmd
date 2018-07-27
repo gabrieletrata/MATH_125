@@ -1,0 +1,172 @@
+---
+title: "Lab 4: Hypothesis Testing for One Proportion / Mean"
+author: "Gabriel Etrata and Theo Kaufman"
+output: html_document
+date: April 4, 2016
+---
+
+<!-- WARNING: This file must be in the same folder with the data and source code to work. DO NOT MODIFY THE CODE CHUNK BELOW OR CHANGE ANY FILENAMES-->
+
+```{r, echo=FALSE, message=FALSE}
+#Source the source code
+source("lab4-source-code.R")
+#Import the data
+data <- read.csv("lab4-data.csv", header = T)
+#Attach the data
+attach(data)
+```
+
+<!-- When you are done with your code, remove this piece of text (including the symbols at the beginning and end) and write a brief one or two sentence introduction to this lab. For example: "In this lab, we..." -->
+
+(1) #### Introductory Test: Time Perception
+
+a) How accurately do people perceive time?
+
+c)
+```{r}
+length(times)
+mean(times)
+hist(times)
+```
+
+The histogram is right-skewed and unimodal. 
+
+d) 
+
+Null hypothesis: In the population, the average perceived time will equal the true length of the snippet.
+
+$$H_o: \mu = 10$$
+
+
+Alternative hypothesis: In the population, people will tend to overestimate the lenngth of the song snippet.
+
+$$H_a: \mu > 10$$
+e)
+```{r}
+faketimes <- times - 3.71
+mean(faketimes)
+hist(faketimes)
+sample1 <- sample(faketimes, 48, replace = T)
+mean(sample1)
+```
+
+f)
+
+```{r}
+set.seed(5) 
+samplemeans <- replicate (1000, mean(sample(faketimes, 48, replace = T)))
+sort(samplemeans)
+
+```
+
+g) The probability that a sample of 48 would result in a sample mean of at least 13.71 seconds by chance alone is 1/1000.
+
+h) It is very unlikely, so rejecting the null would be valid decision, because: $$\bar{x} < 5\%$$
+In context, it is extremely unlikely that someone would perceive the snippet to be 10 seconds in length by chance.
+
+[look back / look ahead.]
+
+#### Coke vs. Pepsi
+
+(a) Do BHSEC college students reflect the US population's preference for Coke to Pepsi?
+
+b) $$\mu = .526 $$
+```{r}
+table(soda)
+```
+
+c) Null Hypothesis: The proportion of BHSEC College students preferring Coke to Pepsi is equal to the proportion of the US population preferring Coke to Pepsi. 
+$$H_o: \mu = .66$$
+
+Alternative Hypothesis: The proportion of BHSEC College students preferring Coke to Pepsi is greater than the proportion of the US population preferring Coke to Pepsi.
+$$H_a: \mu > .66$$
+
+d) sample(3,38,replace=T) *Where 1 and 2 correspond to Coke Preference and 3 corresponds to Pepsi preference*
+```{r}
+(sample(3,38,replace=T))
+table(sample(3,38,replace=T))
+```
+
+In this simulation, 27 of the 38 students preferred Coke to Pepsi. 
+
+e) 
+```{r}
+set.seed(456) #You can change this number to get different random results.
+randomization.test(soda,null=(2/3),num=1000,distribution=T)
+```
+
+f) 20 out of 38 is equivalent to about 0.5263158. There were 34 proportions below that proportion generated from the 1000 random simulations. This matches the p-value shown on the randomization plot (0.034) as 34/1000 = 0.034.
+
+g) $$\bar{x} < 5\%$$ is unlikely enought to lead me to reject the Null Hypothesis. In context, this means that the proportion of BHSEC students preferring Coke to Pepsi is unlikely to equal the proportion of the national population preferring Coke to Pepsi by chance. 
+
+h) Some further ideas that I have after testing this sample are to investigate the  
+
+#### True Love?
+
+a) Do BHSEC college students' estimated age at marriage align with the average NY marriage age?
+
+b)
+```{r}
+mean(marriage)
+hist(marriage)
+```
+
+c) Null Hypothesis: BHSEC college students' estimated age at which they will get married will be the same as the average age of first marriage in New York.
+$$H_o: \mu = 29$$
+
+Alternative Hypothesis: BHSEC college students' estimated age at which they will get married will be less than the average age of first marriage in New York.
+$$H_a: \mu < 29$$
+
+d) 
+```{r}
+fakemarriage<-marriage+1.65789
+sample3<-sample(fakemarriage,38,replace=T)
+mean(sample3)
+```
+
+e)
+```{r}
+set.seed(789) #You can change this number to get different random results.
+randomization.test(marriage,null=29,num=1000)
+```
+
+f) Out of these 1000 simulations, none yielded a mean the same as the real sample or further away from the null. 
+
+g) Seeing as $$\bar{x} < 5\%$$ I would reject the null hypothesis. In context, this essentially means that it is extremely unlikely - if not, according to this sample at least, impossible - that BHSEC college students would estimate their age at marriage to be lower than the average New York age of marriage by chance
+
+h) I was extremely surprised that out of 1000 simulations, not one yielded a mean the same as the real sample or further away from the null. 
+
+#### BHSEC Lefties
+
+a) Are BHSEC college students more likely to be left-handed than the general population?
+
+b)  $$\mu = 0.1515152$$
+```{r}
+table(handedness)
+```
+
+c) Null Hypothesis: The proportion of BHSEC college students who are left-handed is the same as the proportion of the general population that is left-handed. 
+$$H_o: \mu = .1$$
+
+Alternative Hypothesis: The proportion of BHSEC college students who are left-handed is greater than the proportion of the general population that is left-handed. 
+$$H_a: \mu > .1$$
+
+d) sample(10,38,replace=T) *Where the number 1 corresponds with left-handedness and the numbers 2-10 correspond with right-handedness.*
+```{r}
+sample(10,38,replace=T)
+table(sample(10,38,replace=T))
+```
+
+In this simulation, four out of 38 students were left-handed.
+
+e)
+```{r}
+set.seed(4) #You can change this number to get different random results.
+randomization.test(handedness,null=(10/100),num=1000,distribution=T)
+```
+
+f)
+
+[conclusions and look back/look ahead]
+
+[Concluding paragraph here. Summarize what conclusions you made (or were unable to make based on the sample.]

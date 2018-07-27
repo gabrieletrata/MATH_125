@@ -1,0 +1,203 @@
+---
+title: "Lab 5: Hypothesis Testing for Comparing Two Proportions / Means"
+author: "Gabriel Etrata and Craig Balkhuysen"
+output: html_document
+date: April 14, 2016
+---
+
+<!-- WARNING: This file must be in the same folder with the data and source code to work. DO NOT MODIFY THE CODE CHUNK BELOW OR CHANGE ANY FILENAMES-->
+
+```{r, echo=FALSE, message=FALSE}
+#Source the source code
+source("lab5-source-code.R")
+#Import the data
+lab5.data <- read.csv("lab5-data.csv", header = T)
+#Attach the data
+attach(lab5.data)
+```
+
+### 1) Is there sample evidence in how much Year 1 students exercise versus Year 2 students?
+
+1a)
+
+Is there a difference in how much Year-1 students exercise vs. Year-2 students?
+
+1b)
+```{r}
+compareMeans(hrs.exercise, year)
+boxplot(hrs.exercise~year, main = "Hours of Exercise of BHSEC College Students")
+```
+
+1c)
+
+Null hypothesis:
+
+There is no difference in the amount of hours exercised by Year 1s and Year 2s. 
+$$H_o: \hat{p}_{Y1} = \hat{p}_{Y2}$$
+
+Alternative hypothesis:
+
+There is a difference in the amount of hours exercised by Year 1s and Year 2s.
+$$H_a: \hat{p}_{Y1} \neq \hat{p}_{Y2}$$
+
+```{r}
+lab5.data$shuffled.hrs.exercise <- sample(hrs.exercise)
+compareMeans(lab5.data$shuffled.hrs.exercise, lab5.data$year)
+```
+
+$$\bar{x}_{Y1} - \bar{x}_{Y2} = -1.11$$
+
+```{r}
+set.seed(100)
+randomization.test(lab5.data$hrs.exercise, lab5.data$year, num = 1000, dist = F)
+```
+
+Number of randomized samples that were at least as extreme as the real sample: 30
+
+Two sided p-value: 0.015
+
+1d)  Judging from the two-sided p-Value, and the data collected from the analysis, it can be concluded that there is not much of a difference between how much Year 1 students and Year 2 students exercise. In conclusion, We keep the null hypothesis 
+
+1e) I think it's interesting how the boxplot shows that the means of both grades are relatively close, but there are more Year 1 students towards the lower amount of hours exercised, while there are more Year 2 students towards the higher amount of horus exercised. Could more free time among Y2 students be the cause for this?
+
+### 2) Is there sample evidence of a Year 1-Year 2 difference on the sophomore lunch issue? 
+
+2a)
+
+Is there a difference in how Year 1s and Year 2s feel about the Sophmore lunch issue?
+
+2b)
+```{r}
+compareProportions(soph.lunch, year)
+table(soph.lunch, year)
+```
+
+2c)
+
+Null hypothesis: 
+ 
+There is no diffrence of opinion between Year 1s and Year 2s on the sophomore lunch issue.
+$$H_o: \bar{x}_{Y1} = \bar{x}_{Y2}$$
+ 
+Alternative hypothesis: There is a difference of opinion between Year 1s and Year 2s on the sophmore lunch issue.
+$$H_a: \bar{x}_{Y1} \neq \bar{x}_{Y2}$$
+ 
+```{r}
+lab5.data$shuffled.soph.lunch <- sample(soph.lunch)
+compareProportions(lab5.data$shuffled.soph.lunch, lab5.data$year)
+```
+
+Difference in proportions: 0.05
+
+```{r}
+set.seed((100))
+randomization.test(lab5.data$shuffled.soph.lunch, lab5.data$year, num = 1000, dist = F)
+```
+
+Number of randomized samples that were at least as extreme as the real sample: 290
+
+Two sided p-value: 0.290
+
+2d) Judging from the two-sided p-value and the data, as well as taking into consideration that there is a difference in the amount of students examined, with more Year 1 students than Year 2 students, it can be said that Year 2 students prefer that sophomores should not be allowed out for lunch compared to Year 1 students. We reject the null hypothesis in favor of the alternative hypothesis.
+
+2e) There appears to be undercoverage bias of Y1 students in the sample and this could be the reason to why so many Y2 students have said no in comparison to Y1 students saying yes (which is a super small sample).
+
+### 3) Is there sample evidence of a Year 1-Year 2 difference when it comes to social network use?
+
+3a) Do Y1 and Y2 students differ in social network use?
+
+3b)
+
+```{r}
+compareMeans(hrs.fb, year)
+boxplot(hrs.fb~year, main = "Hours of Social Media Use of BHSEC College Students")
+```
+
+3c)
+
+Null hypothesis:
+
+There is no difference in the amount of hours on social media by Year 1s and Year 2s. 
+$$H_o: \hat{p}_{Y1} = \hat{p}_{Y2}$$
+
+Alternative hypothesis:
+
+There is a difference in the amount of hours on social media by Year 1s and Year 2s.
+
+$$H_a: \hat{p}_{Y1} \neq \hat{p}_{Y2}$$
+
+```{r}
+lab5.data$shuffled.hrs.fb <- sample(hrs.fb)
+compareMeans(lab5.data$shuffled.hrs.fb, lab5.data$year)
+```
+
+$$\bar{x}_{Y1} - \bar{x}_{Y2} = -2.27$$
+
+```{r}
+set.seed((100))
+randomization.test(lab5.data$shuffled.hrs.fb, lab5.data$year, num = 1000, dist = F)
+```
+
+Number of randomized samples that were at least as extreme as the real sample: 44 
+
+Two sided p-value: 0.044
+
+3d) From the two-sided p-value observed and the data collected, we can conclude that there is a small difference between Year 1 students and Year 2 students and their respective social network use and both parties spend about the same amount of time on social media. Conclusively, we keep the null.
+
+3e) It does not seem surprising that there is not much of a difference of social media usage between Y1 and Y2 students on average. Both groups are in the teenage demographic, which uses social media at a high level nearly everyday (myself included).
+
+### 4) Is there sample evidence of a gender difference on the sophomore lunch issue?
+
+4a)
+
+Is there a gender difference on the sophomore lunch issue?
+
+4b)
+```{r}
+compareProportions(soph.lunch, gender)
+table(soph.lunch, gender)
+```
+
+
+4c)
+
+Null hypothesis: There is no difference between gender on the sophomore lunch issue.
+
+$$H_o: \bar{x}_{Y1} = \bar{x}_{Y2}$$
+
+Alternative hypothesis: There is a difference between gender on the sophomore lunch issue.
+
+$$H_a: \bar{x}_{Y1} \neq \bar{x}_{Y2}$$
+
+```{r}
+lab5.data$shuffled.soph.lunch <- sample(soph.lunch)
+compareProportions(lab5.data$shuffled.soph.lunch, lab5.data$gender)
+```
+
+Difference in proportions:  0.02
+```{r}
+set.seed((100))
+randomization.test(lab5.data$soph.lunch, lab5.data$gender, num = 1000, dist = F)
+```
+
+Number of randomized samples that were at least as extreme as the real sample: 766
+
+Two sided p-value: 0.766
+
+4d) Judging from the p-value, it can be concluded that there is a difference between males and females when it comes to their opinion of whether or not sophomores should be allowed to go out for lunch. We reject the null hypothesis in the favor of the alternative hypothesis. 
+
+4e) It's pretty interesting that a higher proportion of females said no, while a higher proportion of males said yes. This could be attributed to BHSEC's population in general of having more females than males.
+<!-- Continue your lab below. DON'T FORGET: before each use of the sample or randomization.test command, add set.seed() with some number of your choice in the parentheses. ALSO: when done, remove the "dist=T" argument from each randomization.test command in order to leave the long list of numbers out of your lab report.-->
+
+###CONCLUSION:
+Studying BHSEC college students once again was a fun task and we have some interesting conclusions to make. We found that: 
+
+1) On average, there is not much of a difference in the number of hours exercised between Y1 and Y2 students.
+
+2) There is a difference between Y1 and Y2 students on the issue of whether or not sophomores should be able to go out for lunch.
+
+3) There is not much of a difference between Y1 and Y2 students when it comes to social network use.
+
+4) There is a gender difference regarding the sophomore lunch issue.
+
+Judging from the data and these conclusions, it appears that the BHSEC population does not have much division when it comes to the amount of time put into physical activity and social media usage, but it does have a difference when it comes to social issues and gender plays a role in this respect as well. Perhaps time management (different schedules) plays a role when it comes to their number of hours exercised and social media usage, while coming from different backgrounds may contribute to the sophomore lunch issue.

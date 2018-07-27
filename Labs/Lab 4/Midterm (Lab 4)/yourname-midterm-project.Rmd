@@ -1,0 +1,127 @@
+---
+title: "Paramount's Key to Success"
+author: "Gabriel Etrata"
+output: html_document
+
+---
+
+<!-- WARNING: This file must be in the same folder with the data and source code to work.-->
+
+```{r, echo=FALSE, message=FALSE}
+#############################
+#DON'T MESS WITH THIS CODE CHUNK!
+#source("lab3-source-code.R")
+#Import the data
+hollywood <- read.csv("hollywood.csv", header = T)
+#Attach the data
+attach(hollywood)
+###############################
+```
+###How Does Paramount Compare?
+
+One thing to consider as a professional, big-name, film studio is how our films compare to those 
+made by independent studios. Does our bigger budget for films justify critic and audience ratings?
+
+```{r}
+indieMovies <- subset(hollywood, studio == "Independent")
+paramountMovies <- subset(hollywood, studio == "Paramount")
+
+par(mfrow = c(2, 2))
+hist(indieMovies$rottenscore, main = "Rotten Scores for Indie Movies", xlab = "Score")
+hist(paramountMovies$rottenscore, main = "Rotten Scores for Paramount Movies", xlab = "Score" )
+hist(indieMovies$audscore, main = "Audience Scores for Indie Movies", xlab = "Score" )
+hist(paramountMovies$audscore, main = "Audience Scores for Paramount Movies", xlab = "Score")
+mean(indieMovies$rottenscore)
+mean(paramountMovies$rottenscore)
+mean(indieMovies$audscore)
+mean(paramountMovies$audscore)
+```
+
+As shown by the histograms and means, Paramount-produced movies generated a higher rating in both regards to audience and critic ratings on Rotten Tomatoes. This suggests that our films are more successful, than those made produced at an independent studio, justifying our bigger budget for films. 
+
+```{r}
+par(mfrow = c(2, 2))
+hist(indieMovies$WWgross, main = "WW Gross for Indie Movies", xlab = "WW Gross (in Millions)")
+hist(paramountMovies$WWgross, main = "WW Gross for Paramount Movies", xlab = "WW Gross (in Millions)")
+mean(indieMovies$WWgross)
+mean(paramountMovies$WWgross)
+```
+
+In addition, Paramount's WW gross compared to independent studios is higher, as shown by the histograms and means. Our movies accumulate a higher percentage of money than independent studios, which indiicates that we are producing content that is more profitable not only at a domestic level, but at the international level as well.
+
+```{r}
+par(mfrow = c(2, 2))
+hist(indieMovies$avgopening, main = "Average Opening for Indie Movies", xlab = "Average Opening ($)", xlim = c(0, 30000))
+hist(paramountMovies$avgopening, main = "Average Opening for Paramount Movies", xlab = "Average Opening ($)")
+mean(indieMovies$avgopening)
+mean(paramountMovies$avgopening)
+```
+
+Compared to independent movies, Paramount movies have a higher average opening, which indicates that we produce more desirable content for the audience than independent studios. 
+
+###Appraisal for "Love...Never Heard of It"
+
+```{r}
+biographicalMovies <- subset(hollywood, genre == "Biography")
+dramaMovies <- subset(hollywood, genre == "Drama")
+successfulMovies <- subset(hollywood, percentprofit >= 100)
+appealingMovies <- subset(hollywood, FORgross >= DOMgross)
+
+plot(biographicalMovies$rottenscore, biographicalMovies$openingtheaters, main = "Rotten Score vs. Opening Theaters for Biographical Movies", xlab = "Rotten Score", ylab = "Opening Theaters")
+lm(biographicalMovies$openingtheaters~biographicalMovies$rottenscore)
+abline(2024.608, -1.935, col = "red")
+cor(biographicalMovies$rottenscore, biographicalMovies$openingtheaters)
+```
+
+The relationship between a biographical movie's rotten score and opening theaters appear to have a weak and negative relationship and have no correlation. This indicaties that a biographical movie does not have any effect on it's rotten score and has the potential to either become a box office hit, or flop. With this information at hand, "Love...Never Heard Of It" has the potential to become successful. 
+
+```{r}
+plot(biographicalMovies$rottenscore, biographicalMovies$budget, main = "Rotten Score vs. Budget for Biographical Movies", xlab = "Rotten Score", ylab = "Budget ($ in Miliions)")
+lm(biographicalMovies$budget~biographicalMovies$rottenscore)
+abline(28.8532, 0.1167, col = "red")
+cor(biographicalMovies$budget, biographicalMovies$rottenscore)
+```
+
+A biographical movie and the relationship between it's budget and rotten score appear to have a weak and positive relationship, with no correlation. This indicates that the film's budget of $64 Million does not have a strong affect on it's rotten score of 59.  
+
+```{r}
+plot(dramaMovies$rottenscore, dramaMovies$openingtheaters, main = "Rotten Score vs. Opening Theaters for Drama Movies", xlab = "Rotten Score", ylab = "Opening Theaters")
+lm(dramaMovies$openingtheaters~dramaMovies$rottenscore)
+abline(3090.88, -18.87, col = "red")
+cor(dramaMovies$rottenscore, dramaMovies$openingtheaters)
+3090.88 + (59*-18.87)
+```
+
+The relationship between a drama movie's rotten score and its opening theaters appear to have a weak, negative relationship, with a weak correlation. This appears to indicate that the higher the rotten score is, the less opening theaters the movie had, and the lower the score, the more opening theaters the movie had. Therefore, dramas can either have a really good, or bad outcome, despite of their opening theaters. In our case, "Love...Never Heard of It"should be opened in around 2,000 theaters, rather than 3,145 in order to not lose any money and be on the safe side.
+
+```{r}
+plot(dramaMovies$budget, dramaMovies$rottenscore, main = "Rotten Score vs. Budget for Drama Movies", xlab = "Rotten Score", ylab = "Budget($ in Millions)", xlim = c(0, 125))
+lm(dramaMovies$rottenscore~dramaMovies$budget)
+abline(63.9082, -0.2525, col = "red")
+cor(dramaMovies$budget, dramaMovies$rottenscore)
+63.9082 + (59*0.2525)
+```
+
+The relationship between a drama movie's rotten score and budget is weak and negative and has a weak correlation. It appears that the higher a movie's budget is, the lower it's rotten score is, which implies that a movie's budget has somewhat of an effect on how well it will do. According to this model, "Love...Never Heard of It" should have had a budget of about $79 million, but since the actual budget of $64 million is lower, we're on the safe side because we spent less on a movie that has some potential to flop. 
+
+Conclusion: The movie will do average, but to save some money we should release it in around 2,000 theaters instead of 3,145 theaters.
+
+###What to Make Next?
+```{r}
+boxplot(percentprofit~genre, ylim = c(0, 10000), main = "Percent Profit Across Genres", xlab = "Genre", ylab = "Percent Profit")
+```
+The next movie Paramount should make is a Horror film because they create the highest percent profit across all types of movies. 
+
+```{r}
+horrorMovies <- subset(hollywood, genre == "Horror")
+hist(horrorMovies$budget, main = "Horror Movies and their Budgets", xlab = "Budget")
+mean(horrorMovies$budget)
+hist(horrorMovies$openingtheaters, main = "Horror Movies and their Opening Theaters", xlab = "Opening Theaters")
+mean(horrorMovies$openingtheaters)
+```
+
+The horror movie should have a budget of around $24 million dollars and open in about 3,000 theaters. 
+
+Conclusion: Paramount should release "Love...Never Heard of It," but open it in 2,000 theaters, and the next film should be a horror film with a budget of $24 million dollars and open it in 3,000 theaters. 
+
+Some things to take into consideration when analyzing this data: the hollywood dataset is extrememly broad, so it must be taken into consideration when put into small subsets. Another thing is that as a result of this, many of the correlations that were analyzed tended to be weak, so for the most part, this data can be considered rough and should be taken with a grain of salt, since there is better data out there. Perhaps the dataset could've included something like average weekly attendance for 4 weeks in order to describe how successful, or unsuccessful a movie is in the long run. 

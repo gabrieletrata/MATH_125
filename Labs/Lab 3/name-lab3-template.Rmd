@@ -1,0 +1,135 @@
+---
+title: "Lab 3: Correlation and Simple Linear Modeling"
+author: Gabriel Etrata and Theo Kaufman
+output: html_document
+
+---
+
+<!-- WARNING: This file must be in the same folder with the data and source code to work.-->
+
+```{r, echo=FALSE, message=FALSE}
+#############################
+#DON'T MESS WITH THIS CODE CHUNK!
+source("lab3-source-code.R")
+#Import the data
+lab3.data <- read.csv("lab3-data.csv", header = T)
+#Attach the data
+attach(lab3.data)
+###############################
+```
+
+
+Exercise 1:
+
+```{r}
+plot(main="SAT Math Score vs. Acceptance Rate", sat.math.Q1, percent.admitted, xlab = "SAT Math Score", ylab = "Percent Admitted")
+cor(sat.math.Q1,percent.admitted)
+```
+
+It appears that the more selective a college is, the higher their average accepted SAT Math score is. The relationship between the two variables is negative and strong.
+
+Exercise 2:
+
+```{r}
+plot(main="Percent Admitted vs. 4-Year Graduation Rate", percent.admitted, grad.rate.4, xlab = "Percent Admitted", ylab = "Graduation Rate in 4 Years")
+cor(percent.admitted, grad.rate.4)
+```
+
+The data seems to suggest that the higher a college's acceptance rate is, the lower their 4-year graduation rate will be. The relationship between the two variables is negative and moderately strong.
+
+Exercise 3:
+
+```{r}
+plot(main = "Out-of-State Cost vs. 4-Year Graduation Rate", out.of.state, grad.rate.4, xlab = "Out-of-State Cost", ylab = "Graduation Rate in 4 Years")
+cor(out.of.state, grad.rate.4)
+```
+
+The data seems to suggest that the more expensive a college is, the higher a college's graduation rate will be. The relationship between the two variables is positive and strong.
+
+
+Exercise 4:
+```{r}
+cor(lab3.data[sapply(lab3.data, is.numeric)])
+if(FALSE){
+pairs(lab3.data[sapply(lab3.data,is.numeric)])
+}
+
+```
+```{r}
+plot(enrollment.undergrad, enrollment.total, main = "Undergrad Enrollment vs. Total Enrollment", xlab = "Undergraduate Enrollment", ylab = "Total Enrollment")
+```
+
+The number of undergraduate students (enrollment.undergrad) and number of all higher education students (enrollment.total) have the strongest correlation. This might be the case because the number of undergraduate students is a subset within the population of higher education students, meaning that they directly contribute to the total enrollment size. 
+
+```{r}
+plot(grad.rate.4, women, main = "Graduation Rate in 4 Years vs. Percentage of Women Students", xlab = "Graduation Rate in 4 Years", ylab = "Percentage of Women Students")
+```
+
+The graduation rate in 4 years (grad.rate.4) and percent of students who are women (women) have the weakest correlation. This might be the case because there is no strong relationship between how many women are enrolled and the overall graduation rates in 4 years of most colleges, which include both men and women. Single-sex schools are an exception in this case and should be considered as outliers.
+
+Exercise 5:
+
+```{r}
+cor(grad.rate.4,grad.rate.6)
+plot(main = "Graduation Rate in 4 Years vs. 6 Years", grad.rate.4, grad.rate.6, xlab = "Graduation Rate in 4 Years", ylab = "Graduation Rate in 6 Years")
+lm(grad.rate.6~grad.rate.4)
+abline(37.3714, 0.6254, col="purple")
+(0.8821616)^2
+37.3714 + (0.6254*70)
+77-81.1494
+```
+
+(b) Observations: The relationship between the two graduation rates appears to be positive and strong.
+
+(c) Linear model for this relationship: $$y = 37.3714 + (0.6254)x$$
+
+(d) The line appears to fit the data well.
+
+(e) $$R^2 = 0.7782091$$
+
+(f) Ithaca University's predicted six-year graduation rate is ~81%. The residual has a value of -4.1494, so the college graduates more students after six years than predicted by the four year graduation rate. 
+
+Exercise 6:
+
+```{r}
+cor(sat.math.Q1, percent.admitted)
+
+plot(sat.math.Q1, percent.admitted, main = "SAT Math Score vs. Percent Admitted", xlab = "SAT Math Score", ylab = "Percent Admitted")
+lm(percent.admitted~sat.math.Q1)
+abline(154.794, -0.193, col = "red")
+(-0.6834637)^2
+154.794 + (-0.193*600)
+39-38.994
+```
+
+(b) Observations: The relationship between the two variables is strong and negative, suggesting that the more selective a school is, the higher their SAT Math score will be. 
+
+(c) Linear model for this relationship: $$y = 154.794 + (-0.193)x$$
+
+(d) The line appears to fit the data well.
+
+(e) $$R^2 = 0.4671226$$
+
+(f) Stony Brook University's predicted selectivity is ~39%. The residual has a value of 0.006, so this college is more selective than predicted by it's SAT Math scores.
+
+
+Excercise 7:
+```{r}
+cor(percent.admitted,finaid)
+plot(percent.admitted,finaid,main="Percent Admitted vs. Percent Receiving Financial Aid", xlab = "Percent Admitted", ylab = "Percent Receiving Financial Aid")
+lm(finaid~percent.admitted)
+abline(62.6221,0.3372,col="yellow")
+(0.547676)^2
+62.6221 + (0.3372*0.33)
+83-62.73338
+```
+
+(b) Observations: The data seems to suggest that the less selective a school is, the more they give financial aid to their students. 
+
+(c) Linear model for this relationship: $$y = 62.6221 + (0.3372)x$$
+
+(d) The line does not appear to fit the data very well. This may be due to a large number of residuals under and above the line. 
+
+(e) $$R^2 = 0.299949$$
+
+(f) SUNY Purchase's predicted percentage of students receiving financial aid is ~63%. The residual has a value of 20.26662, so more students receive financial aid than predicted by the model. 
